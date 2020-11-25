@@ -42,7 +42,7 @@ namespace pSnower
                 string setfile = rootfolder + "settings.json";
                 if (!File.Exists(setfile))
                     File.WriteAllText(setfile, JsonConvert.SerializeObject(Settings, Formatting.Indented));
-                if (File.Exists(setfile))
+                else if (File.Exists(setfile))
                     Settings = JsonConvert.DeserializeObject<pSnowSettings>(File.ReadAllText(setfile));
 
 
@@ -311,7 +311,8 @@ namespace pSnower
             var user = (decimal)g["rating"];
             var numuser = (int)g["rating_count"];
 
-            return ((critic * (numcritic * 4)) + (user * numuser)) / ((numcritic * 4) + numuser);
+            int critic_worth = 4;
+            return ((critic * (numcritic * critic_worth)) + (user * numuser)) / ((numcritic * critic_worth) + numuser);
         }
 
         static bool isPS4game(JToken g)
@@ -337,7 +338,7 @@ namespace pSnower
         static string cleanGameName(string game)
         {
             if (game.Contains(" - Until ") &&
-                (game.EndsWith(DateTime.Now.Year.ToString()) || game.EndsWith((DateTime.Now.Year + 1).ToString()) || game.EndsWith((DateTime.Now.Year + 2).ToString())))
+                (game.EndsWith((DateTime.Now.Year - 1).ToString()) || game.EndsWith(DateTime.Now.Year.ToString()) || game.EndsWith((DateTime.Now.Year + 1).ToString()) || game.EndsWith((DateTime.Now.Year + 2).ToString())))
             {
                 var until = game.Substring(game.LastIndexOf(" - Until ") + " - Until ".Length).Trim();
                 var name = game.Substring(0, game.LastIndexOf(" - Until ")).Trim();
